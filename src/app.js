@@ -3,11 +3,8 @@ import Firebase from 'firebase'
 export class GitflowApp {
 
   constructor() {
-    let client = new Firebase("https://fiery-heat-2090.firebaseio.com/boards")
-    client.on('child_added', (snapshot) => {
-      this.board = Board.fromJson(snapshot.val())
-      console.log(this.board)
-    })
+    let context = new Firebase("https://fiery-heat-2090.firebaseio.com/boards/gitflow")
+    this.board = Board.fromContext(context)
   }
 }
 
@@ -18,9 +15,25 @@ class Board {
     return new Board(title, flows)
   }
 
-  constructor(title: String, flows: List<Flow> = []) {
+  static fromContext(context: Firebase) {
+    let board = new Board().bindTo(context)
+    context.on('value', (snapshot) => {
+      let newBoard = Board.fromJson(snapshot.val())
+      board.title = newBoard.title
+      board.flows = newBoard.flows
+      console.log('New Board loaded:', newBoard)
+    })
+    return board
+  }
+
+  constructor(title: String = '', flows: List<Flow> = []) {
     this.title = title
     this.flows = flows
+  }
+
+  bindTo(context: Firebase) {
+    this.context = context
+    return this
   }
 }
 
