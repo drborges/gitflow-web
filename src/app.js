@@ -5,31 +5,48 @@ export class GitflowApp {
   constructor() {
     let client = new Firebase("https://fiery-heat-2090.firebaseio.com/boards")
     client.on('child_added', (snapshot) => {
-      this.board = new Board(snapshot.val())
+      this.board = Board.fromJson(snapshot.val())
+      console.log(this.board)
     })
   }
 }
 
 class Board {
-  constructor(boardAsJson) {
-    this.title = boardAsJson.title
-    this.flows = Object.keys(boardAsJson.flows).map(f => new Flow(boardAsJson.flows[f]))
+  static fromJson(board: Object) {
+    let title = board.title
+    let flows = Object.keys(board.flows).map(f => Flow.fromJson(board.flows[f]))
+    return new Board(title, flows)
+  }
+
+  constructor(title: String, flows: List<Flow> = []) {
+    this.title = title
+    this.flows = flows
   }
 }
 
 class Flow {
-  constructor(flowAsJson) {
-    this.title = flowAsJson.title
-    this.issues = Object.keys(flowAsJson.issues).map(i => new Issue(flowAsJson.issues[i]))
+  static fromJson(flow: Object) {
+    let title = flow.title
+    let issues = Object.keys(flow.issues).map(i => Issue.fromJson(flow.issues[i]))
+    return new Flow(title, issues)
+  }
+
+  constructor(title: String, issues: List<Issue> = []) {
+    this.title = title
+    this.issues = issues
   }
 }
 
 class Issue {
-  constructor(issueAsJson) {
-    this.type = issueAsJson.type
-    this.title = issueAsJson.title
-    this.description = issueAsJson.description
-    this.owner = issueAsJson.owner
-    this.createdAt = issueAsJson.createdAt
+  static fromJson(issue: Object) {
+    return new Issue(issue)
+  }
+
+  constructor(issue: Object) {
+    this.title = issue.title
+    this.description = issue.description
+    this.type = issue.type
+    this.owner = issue.owner
+    this.createdAt = issue.createdAt
   }
 }
