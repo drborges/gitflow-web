@@ -5,11 +5,10 @@
   <div class="board row">
     <div class="wstream col-lg-4" repeat.for="flow of board.flows">
       <h2>${flow.title}</h2>
-      <ul class="board-tasks" repeat.for="issue of flow.issues">
-        <li class="board-task">${issue.title}</li>
+      <ul class="board-tasks">
+        <li class="board-task" repeat.for="issue of flow.issues">${issue.title}</li>
       </ul>
     </div>
   </div>
-
   </section>
 </template>
