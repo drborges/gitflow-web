@@ -10,17 +10,8 @@ export class GitflowApp {
   }
 }
 
-const EmptyBoardSnapshotVal = {
-  flows: {}
-}
-
-const EmptyFlowSnapshotVal = {
-  issues: {}
-}
-
 class Board {
-  constructor(snapshotKey, snapshotVal = EmptyBoardSnapshotVal) {
-    this.key = snapshotKey
+  constructor(snapshotVal = {}) {
     this.title = snapshotVal.title
     this.flows = []
   }
@@ -29,7 +20,7 @@ class Board {
     context.child('title').on('value', snapshot => this.title = snapshot.val())
     context.child('flows').on('child_added', snapshot => {
       let flowContext = context.child('flows').child(snapshot.key())
-      this.flows.push(new Flow(snapshot.key(), snapshot.val()).boundTo(flowContext))
+      this.flows.push(new Flow(snapshot.val()).boundTo(flowContext))
     })
 
     return this
@@ -37,8 +28,7 @@ class Board {
 }
 
 class Flow {
-  constructor(snapshotKey, snapshotVal = EmptyFlowSnapshotVal) {
-    this.key = snapshotKey
+  constructor(snapshotVal = {}) {
     this.title = snapshotVal.title;
     this.issues = []
   }
@@ -47,7 +37,7 @@ class Flow {
     context.child('title').on('value', snapshot => this.title = snapshot.val())
     context.child('issues').on('child_added', snapshot => {
       let issueContext = context.child('issues').child(snapshot.key())
-      this.issues.push(new Issue(snapshot.key(), snapshot.val()).boundTo(issueContext))
+      this.issues.push(new Issue(snapshot.val()).boundTo(issueContext))
     })
 
     return this
@@ -55,8 +45,7 @@ class Flow {
 }
 
 class Issue {
-  constructor(snapshotKey, snapshotVal = {}) {
-    this.key = snapshotKey
+  constructor(snapshotVal = {}) {
     this.title = snapshotVal.title
     this.description = snapshotVal.description
     this.type = snapshotVal.type
