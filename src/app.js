@@ -22,12 +22,10 @@ class Board {
   constructor(snapshotKey, snapshotVal = EmptyBoardSnapshotVal) {
     this.key = snapshotKey
     this.title = snapshotVal.title
-    this.flows = [] //Object.keys(snapshotVal.flows).map(flowKey => new Flow(flowKey, snapshotVal.flows[flowKey]))
+    this.flows = []
   }
 
   boundTo(context) {
-    //this.flows.forEach(flow => flow.boundTo(context.child('flows').child(flow.key)))
-
     context.child('title').on('value', snapshot => this.title = snapshot.val())
     context.child('flows').on('child_added', snapshot => {
       let flowContext = context.child('flows').child(snapshot.key())
@@ -42,12 +40,10 @@ class Flow {
   constructor(snapshotKey, snapshotVal = EmptyFlowSnapshotVal) {
     this.key = snapshotKey
     this.title = snapshotVal.title;
-    this.issues = [] //Object.keys(snapshotVal.issues).map(issueKey => new Issue(issueKey, snapshotVal.issues[issueKey]))
+    this.issues = []
   }
 
   boundTo(context) {
-    //this.issues.forEach(issue => issue.boundTo(context.child('issues').child(issue.key)))
-
     context.child('title').on('value', snapshot => this.title = snapshot.val())
     context.child('issues').on('child_added', snapshot => {
       let issueContext = context.child('issues').child(snapshot.key())
