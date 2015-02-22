@@ -14,21 +14,21 @@ export class FModel {
     return this
   }
 
-  map(property, Provider) {
+  map(property, Model) {
     this.context.child(property).on('value', snapshot => {
-      this[property] = Provider ? new Provider(this.context.child(property)) : snapshot.val()
+      this[property] = Model ? new Model(this.context.child(property)) : snapshot.val()
     })
     return this
   }
 
-  mapItemsOf(listProperty, ItemProvider) {
+  mapItemsOf(listProperty, Model) {
     if (!this[listProperty]) {
       this[listProperty] = []
     }
 
     this.context.child(listProperty).on('child_added', snapshot => {
       let itemContext = this.context.child(listProperty).child(snapshot.key())
-      this[listProperty].push(new ItemProvider(itemContext))
+      this[listProperty].push(new Model(itemContext))
     })
 
     this.context.child(listProperty).on('child_removed', snapshot => {
