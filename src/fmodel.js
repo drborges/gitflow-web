@@ -32,7 +32,7 @@ export class FModel {
     })
 
     this.context.child(listProperty).on('child_removed', snapshot => {
-      for (let i = 0; i < this[listProperty].length(); i++) {
+      for (let i = 0; i < this[listProperty].length; i++) {
         let item = this[listProperty][i]
         if (item.hasKey(snapshot.key())){
           item.detach()
