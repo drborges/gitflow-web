@@ -21,7 +21,7 @@ export class FModel {
     return this
   }
 
-  mapItemsOf(listProperty, Model) {
+  mapList(listProperty, Model) {
     if (!this[listProperty]) {
       this[listProperty] = []
     }

@@ -18,14 +18,14 @@ class User extends FModel {
 class Board extends FModel {
   constructor(context) {
     super(context)
-    this.map('title').map('owner', User).mapItemsOf('flows', Flow)
+    this.map('title').map('owner', User).mapList('flows', Flow)
   }
 }
 
 class Flow extends FModel {
   constructor(context) {
     super(context)
-    this.map('title').mapItemsOf('issues', Issue)
+    this.map('title').mapList('issues', Issue)
   }
 }
 
