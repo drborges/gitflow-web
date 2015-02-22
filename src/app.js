@@ -2,30 +2,30 @@ import Firebase from 'firebase'
 import {FModel} from './fmodel'
 
 export class GitflowApp {
-
   constructor() {
     let context = new Firebase('https://gitflow.firebaseio.com/boards/board1')
     this.board = new Board(context)
   }
 }
 
-/*
- * Needs to be defined after FModel otherwise the following error is thrown:
- * "Super expression must either be null or a function, not undefined"
- */
+class User extends FModel {
+  constructor(context) {
+    super(context)
+    this.mapAll()
+  }
+}
+
 class Board extends FModel {
   constructor(context) {
     super(context)
-    this.map('title')
-        .mapItemsOf('flows', Flow)
+    this.map('title').map('owner', User).mapItemsOf('flows', Flow)
   }
 }
 
 class Flow extends FModel {
   constructor(context) {
     super(context)
-    this.map('title')
-        .mapItemsOf('issues', Issue)
+    this.map('title').mapItemsOf('issues', Issue)
   }
 }
 

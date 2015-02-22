@@ -1,14 +1,17 @@
 <template>
-<section>
-  <h2>Board: ${board.title}</h2>
+    <section>
+        <h2>Board: ${board.title}</h2>
 
-  <div class="board row">
-    <div class="wstream col-lg-4" repeat.for="flow of board.flows">
-      <h2>${flow.title}</h2>
-      <ul class="board-tasks">
-        <li class="board-task" repeat.for="issue of flow.issues">${issue.title}</li>
-      </ul>
-    </div>
-  </div>
-  </section>
+        <div>
+            <p>Owner: ${board.owner.name} (${board.owner.email})</p>
+        </div>
+        <div class="board row">
+            <div class="wstream col-lg-4" repeat.for="flow of board.flows">
+                <h2>${flow.title}</h2>
+                <ul class="board-tasks">
+                    <li class="board-task" repeat.for="issue of flow.issues">${issue.title}</li>
+                </ul>
+            </div>
+        </div>
+    </section>
 </template>
