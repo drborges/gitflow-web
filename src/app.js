@@ -1,65 +1,37 @@
 import Firebase from 'firebase'
+import {FModel} from './fmodel'
 
 export class GitflowApp {
 
   constructor() {
-    let context = new Firebase('https://fiery-heat-2090.firebaseio.com/boards')
-
-    let gitflowBoardContext = context.child('gitflow')
-    this.board = new Board().boundTo(gitflowBoardContext)
+    let context = new Firebase('https://gitflow.firebaseio.com/boards/board1')
+    this.board = new Board(context)
   }
 }
 
-class Board {
-  constructor(snapshotVal = {}) {
-    this.title = snapshotVal.title
-    this.flows = []
-  }
-
-  boundTo(context) {
-    context.child('title').on('value', snapshot => this.title = snapshot.val())
-    context.child('flows').on('child_added', snapshot => {
-      let flowContext = context.child('flows').child(snapshot.key())
-      this.flows.push(new Flow(snapshot.val()).boundTo(flowContext))
-    })
-
-    return this
+/*
+ * Needs to be defined after FModel otherwise the following error is thrown:
+ * "Super expression must either be null or a function, not undefined"
+ */
+class Board extends FModel {
+  constructor(context) {
+    super(context)
+    this.map('title')
+        .mapItemsOf('flows', Flow)
   }
 }
 
-class Flow {
-  constructor(snapshotVal = {}) {
-    this.title = snapshotVal.title;
-    this.issues = []
-  }
-
-  boundTo(context) {
-    context.child('title').on('value', snapshot => this.title = snapshot.val())
-    context.child('issues').on('child_added', snapshot => {
-      let issueContext = context.child('issues').child(snapshot.key())
-      this.issues.push(new Issue(snapshot.val()).boundTo(issueContext))
-    })
-
-    return this
+class Flow extends FModel {
+  constructor(context) {
+    super(context)
+    this.map('title')
+        .mapItemsOf('issues', Issue)
   }
 }
 
-class Issue {
-  constructor(snapshotVal = {}) {
-    this.title = snapshotVal.title
-    this.description = snapshotVal.description
-    this.type = snapshotVal.type
-    this.owner = snapshotVal.owner
-    this.createdAt = snapshotVal.createdAt
-  }
-
-  boundTo(context) {
-    context.on('child_changed', snapshot => {
-      let issueProperty = snapshot.val()
-      this[snapshot.key()] = issueProperty
-    })
-
-    return this
+class Issue extends FModel {
+  constructor(context) {
+    super(context)
+    this.mapAll()
   }
 }
-
