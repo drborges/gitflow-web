@@ -1,8 +1,9 @@
 <template>
     <section>
-        <h2>Board: ${board.title}</h2>
+        <h2 if.bind="!board.title">Loading Board...</h2>
+        <h2 if.bind="board.title">Board: ${board.title}</h2>
 
-        <div>
+        <div if.bind="board.owner">
             <p>Owner: ${board.owner.name} (${board.owner.email})</p>
         </div>
         <div class="board row">
