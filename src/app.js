@@ -13,12 +13,6 @@ export class GitflowApp {
   }
 }
 
-class User extends FModel {
-  mappings(mapper) {
-    mapper.mapAny()
-  }
-}
-
 class Board extends FModel {
   mappings(mapper) {
     mapper.map('title').map('owner', User).mapList('flows', Flow)
@@ -46,3 +40,4 @@ class Flow extends FModel {
 }
 
 class Issue extends FModel {}
+class User extends FModel {}
