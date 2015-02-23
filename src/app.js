@@ -38,6 +38,8 @@ class Flow extends FModel {
   }
 
   addIssue(data) {
+    // TODO perhaps I can use Object.observe to trigger this save call in FModel
+    // whenever a new issue is added to the list
     this.context.child('issues').push({
       title: data.title,
       description: data.description

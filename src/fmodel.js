@@ -19,7 +19,10 @@ export class FModel {
     this.context.on('child_changed', snapshot => this[snapshot.key()] = snapshot.val())
 
     let throttledUpdateChanges = _.throttle(changes => {
-      changes.forEach(change => this.context.child(change.name).set(change.object[change.name]))
+      changes.
+        filter(change => change.name !== '__observers__' && change.name !== '__observer__').
+        filter(change => change.type === 'update').
+        forEach(change => this.context.child(change.name).set(change.object[change.name]))
     }, 400)
 
     Object.observe(this, changes => throttledUpdateChanges(changes))
@@ -42,6 +45,15 @@ export class FModel {
       let itemContext = this.context.child(listProperty).child(snapshot.key())
       this[listProperty].push(new Model(itemContext))
     })
+
+    let throttledAddChanges = _.throttle(changes => {
+      changes.
+        filter(change => change.name !== '__observers__' && change.name !== '__observer__').
+        filter(change => change.type === 'add').
+        forEach(change => console.log(change))//this.context.child(change.name).set(change.object[change.name]))
+    }, 400)
+
+    Object.observe(this, changes => throttledAddChanges(changes))
 
     this.context.child(listProperty).on('child_removed', snapshot => {
       for (let i = 0; i < this[listProperty].length; i++) {
