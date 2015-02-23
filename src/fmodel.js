@@ -1,8 +1,15 @@
 import _ from '../node_modules/underscore/underscore'
 
 export class FModel {
-  constructor(context) {
+  bindTo(context) {
     this.context = context
+    this.mappings(this) // TODO encapsulate mapping functions within a mapper instance
+    return this
+  }
+
+  // Maps any Firebase attribute by default
+  mappings() {
+    this.mapAny()
   }
 
   key() {
@@ -31,7 +38,7 @@ export class FModel {
 
   map(property, Model) {
     this.context.child(property).on('value', snapshot => {
-      this[property] = Model ? new Model(this.context.child(property)) : snapshot.val()
+      this[property] = Model ? new Model().bindTo(this.context.child(property)) : snapshot.val()
     })
     return this
   }
@@ -43,7 +50,7 @@ export class FModel {
 
     this.context.child(listProperty).on('child_added', snapshot => {
       let itemContext = this.context.child(listProperty).child(snapshot.key())
-      this[listProperty].push(new Model(itemContext))
+      this[listProperty].push(new Model().bindTo(itemContext))
     })
 
     let throttledAddChanges = _.throttle(changes => {

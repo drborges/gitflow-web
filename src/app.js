@@ -5,7 +5,7 @@ export class GitflowApp {
   constructor() {
     let context = new Firebase('https://gitflow.firebaseio.com/boards/board1')
     this.issue = {}
-    this.board = new Board(context)
+    this.board = new Board().bindTo(context)
   }
 
   createIssue(newIssue) {
@@ -14,16 +14,14 @@ export class GitflowApp {
 }
 
 class User extends FModel {
-  constructor(context) {
-    super(context)
-    this.mapAny()
+  mappings(mapper) {
+    mapper.mapAny()
   }
 }
 
 class Board extends FModel {
-  constructor(context) {
-    super(context)
-    this.map('title').map('owner', User).mapList('flows', Flow)
+  mappings(mapper) {
+    mapper.map('title').map('owner', User).mapList('flows', Flow)
   }
 
   flow(key) {
@@ -32,9 +30,8 @@ class Board extends FModel {
 }
 
 class Flow extends FModel {
-  constructor(context) {
-    super(context)
-    this.map('title').mapList('issues', Issue)
+  mappings(mapper) {
+    mapper.map('title').mapList('issues', Issue)
   }
 
   addIssue(data) {
@@ -48,9 +45,4 @@ class Flow extends FModel {
   }
 }
 
-class Issue extends FModel {
-  constructor(context) {
-    super(context)
-    this.mapAny()
-  }
-}
+class Issue extends FModel {}
