@@ -1,3 +1,5 @@
+import _ from '../node_modules/underscore/underscore'
+
 export class FModel {
   constructor(context) {
     this.context = context
@@ -16,10 +18,11 @@ export class FModel {
     this.context.on('child_added', snapshot => this[snapshot.key()] = snapshot.val())
     this.context.on('child_changed', snapshot => this[snapshot.key()] = snapshot.val())
 
-    Object.observe(this, changes => {
+    let throttledUpdateChanges = _.throttle(changes => {
       changes.forEach(change => this.context.child(change.name).set(change.object[change.name]))
-    })
+    }, 400)
 
+    Object.observe(this, changes => throttledUpdateChanges(changes))
     return this
   }
 
