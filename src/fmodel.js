@@ -11,7 +11,7 @@ export class FModel {
     return this.context.key() === key
   }
 
-  mapAll() {
+  mapAny() {
     this.context.on('child_removed', snapshot => delete this[snapshot.key()])
     this.context.on('child_added', snapshot => this[snapshot.key()] = snapshot.val())
     this.context.on('child_changed', snapshot => this[snapshot.key()] = snapshot.val())

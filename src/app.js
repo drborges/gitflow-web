@@ -16,7 +16,7 @@ export class GitflowApp {
 class User extends FModel {
   constructor(context) {
     super(context)
-    this.mapAll()
+    this.mapAny()
   }
 }
 
@@ -49,6 +49,6 @@ class Flow extends FModel {
 class Issue extends FModel {
   constructor(context) {
     super(context)
-    this.mapAll()
+    this.mapAny()
   }
 }
