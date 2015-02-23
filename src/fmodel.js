@@ -3,6 +3,10 @@ export class FModel {
     this.context = context
   }
 
+  key() {
+    return this.context.key()
+  }
+
   hasKey(key) {
     return this.context.key() === key
   }
@@ -11,6 +15,11 @@ export class FModel {
     this.context.on('child_removed', snapshot => delete this[snapshot.key()])
     this.context.on('child_added', snapshot => this[snapshot.key()] = snapshot.val())
     this.context.on('child_changed', snapshot => this[snapshot.key()] = snapshot.val())
+
+    Object.observe(this, changes => {
+      changes.forEach(change => this.context.child(change.name).set(change.object[change.name]))
+    })
+
     return this
   }
 

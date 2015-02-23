@@ -1,16 +1,40 @@
 <template>
-    <section>
+    <section if.bind="board">
         <h2 if.bind="!board.title">Loading Board...</h2>
+
         <h2 if.bind="board.title">Board: ${board.title}</h2>
 
         <div if.bind="board.owner">
             <p>Owner: ${board.owner.name} (${board.owner.email})</p>
         </div>
+
+        <div>
+            <h4>New Issue</h4>
+
+            <div>
+                <label for="issue-title">Title</label>
+                <input type="text" class="form-control" id="issue-title" value.bind="issue.title"/>
+            </div>
+            <div>
+                <label for="issue-description">Description</label>
+                <input type="text" class="form-control" id="issue-description" value.bind="issue.description"/>
+            </div>
+            <div>
+                <label for="issue-flow">Flow</label>
+                <select value.bind="issue.flow" id="issue-flow" class="form-control">
+                    <option>Select A Flow</option>
+                    <option repeat.for="flow of board.flows" value.bind="flow.key()">${flow.title}</option>
+                </select>
+            </div>
+
+            <input type="button" class="form-control" click.delegate="createIssue(issue)" value="Create"/>
+        </div>
+
         <div class="board row">
             <div class="wstream col-lg-4" repeat.for="flow of board.flows">
                 <h2>${flow.title}</h2>
                 <ul class="board-tasks">
-                    <li class="board-task" repeat.for="issue of flow.issues">${issue.title}</li>
+                    <li class="board-task" repeat.for="issue of flow.issues"><input type="text" value.bind="issue.title" /></li>
                 </ul>
             </div>
         </div>
