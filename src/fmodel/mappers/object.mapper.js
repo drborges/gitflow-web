@@ -1,10 +1,10 @@
 import _ from '../../../node_modules/underscore/underscore'
+import {Mapper} from 'mapper'
 
-export class ObjectMapper {
+export class ObjectMapper extends Mapper {
 
   constructor(model) {
-    this.model = model
-    this.mapped = new Set()
+    super(model)
   }
 
   canMap(property) {
@@ -24,23 +24,11 @@ export class ObjectMapper {
     }, 400)
   }
 
-  map(property, Model) {
-    if (!this.canMap(property)) {
-      connsole.warn('ObjectMapper cannot map property' + property + '. An object must be provided.')
-      return this
-    }
-
-    if (this.mapped.has(property))
-      return this
-
-    this.mapped.add(property)
-
-    // Maps data from Firebase into model
-    this.context.child(property).on('value', firebaseValueHandler(Model))
-
-    // Maps data from model into Firebase
+  mapToFirebase(property) {
     Object.observe(this[property], debouncedChangesHandler())
+  }
 
-    return this
+  mapFromFirebase(property, Model) {
+    this.context.child(property).on('value', firebaseValueHandler(Model))
   }
 }

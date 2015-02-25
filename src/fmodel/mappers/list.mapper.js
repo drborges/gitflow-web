@@ -1,10 +1,10 @@
 import _ from '../../../node_modules/underscore/underscore'
+import {Mapper} from 'mapper'
 
-export class ListMapper {
+export class ListMapper extends Mapper {
 
   constructor(model) {
-    this.model = model
-    this.mapped = new Set()
+    super(model)
   }
 
   canMap(property) {
@@ -47,27 +47,13 @@ export class ListMapper {
     }, 400)
   }
 
-  map(property, Model) {
-    if (!this.canMap(property)) {
-      connsole.warn('ListMapper cannot map property' + property + '. A list must be provided.')
-      return this
-    }
+  mapToFirebase(property) {
+    Object.observe(this[property], debouncedListItemAddedHandler(property))
+    Object.observe(this[property], debouncedListItemRemovedHandler(property))
+  }
 
-    if (this.mapped.has(property))
-      return this
-
-    this.mapped.add(property)
-
-    // Maps data from Firebase into model
+  mapFromFirebase(property, Model) {
     this.context.child(property).on('child_added', firebaseChildAddedHandler(property, Model))
     this.context.child(property).on('child_removed', firebaseChildRemovedHandler(property))
-
-    // Maps new items added to the model into Firebase
-    Object.observe(this[property], debouncedListItemAddedHandler(property))
-
-    // Maps new items added to the model into Firebase
-    Object.observe(this[property], debouncedListItemRemovedHandler(property))
-
-    return this
   }
 }

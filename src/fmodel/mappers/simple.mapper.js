@@ -1,14 +1,14 @@
 import _ from '../../../node_modules/underscore/underscore'
+import {Mapper} from 'mapper'
 
 /*
  * Provides 3-way data binding for primitive attributes of an object
  * such as 'String' and 'Number'
  */
-export class SimpleMapper {
+export class SimpleMapper extends Mapper {
 
   constructor(model) {
-    this.model = model
-    this.mapped = new Set()
+    super(model)
   }
 
   firebaseValueHandler(snapshot) {
@@ -27,28 +27,11 @@ export class SimpleMapper {
     return _.isString(property) || _.isNumber(property)
   }
 
-  map(property) {
-    if (!this.canMap(property)) {
-      connsole.warn('SimpleMapper cannot map property' + property + '. A string or a number must be provided.')
-      return this
-    }
-
-    if (this.mapped.has(property))
-      return this
-
-    this.mapped.add(property)
-
-    // Maps data from Firebase into model
-    this.model.context.child(property).on('value', firebaseValueHandler)
-
-    // Maps data from model into Firebase
+  mapToFirebase(property) {
     Object.observe(this, debouncedChangesHandler())
-
-    return this
   }
 
-  unmap(property) {
-    this.context.child(property).off('value', firebaseValueHandler)
-    return this
+  mapFromFirebase(property, Model) {
+    this.model.context.child(property).on('value', firebaseValueHandler)
   }
 }
